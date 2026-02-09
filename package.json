@@ -18,7 +18,8 @@
   "name": "@more-cars/rest-api-ticket-generator",
   "repository": "https://github.com/more-cars/rest-api-ticket-generator",
   "scripts": {
-    "start": "node --env-file=.env -r ts-node/register create-jira-tickets.ts"
+    "generate-tickets": "node --env-file=.env -r ts-node/register create-jira-tickets.ts",
+    "generate-tickets:node:create": "HYGEN_OVERWRITE=1 HYGEN_TMPLS=./ hygen features create-node && node --env-file=.env -r ts-node/register create-tickets-for-create-node.ts"
   },
   "version": "0.1.0"
 }
