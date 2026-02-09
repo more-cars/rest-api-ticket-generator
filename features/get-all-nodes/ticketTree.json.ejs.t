@@ -1,5 +1,5 @@
 ---
-to: ticket-generator/_temp/ticketTree.json
+to: _temp/ticketTree.json
 ---
 {
     "epic": {
