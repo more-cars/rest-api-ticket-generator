@@ -1,0 +1,47 @@
+{
+    "epic": {
+        "jiraId": "MCA-218",
+        "dataStructure": null,
+        "stories": [{
+            "title": "Get RACING GAME Node by ID",
+            "userStory": "As an API consumer\nI want to be able to request a specific RACING GAME\nSo I can find out all the details about it when I only have its ID",
+            "specificationList": [
+                "The requested RACING GAME node is returned when the provided ID is valid. -> Status Code `200`",
+                "A successful request returns the node with all specified properties.",
+                "Properties are returned, even when they are empty (optional fields). They are returned with value `null`.",
+                "Requests with invalid ID are rejected. This case can happen when there exists no node with that ID or when the node is not from type RACING GAME. -> Status Code `404`"
+            ],
+            "apiVerb": "GET",
+            "apiPath": "/racing-games/<racing-game-id>",
+            "responseOptions": [
+                "200",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "Requesting a RACING GAME with a valid ID returns the respective node",
+                    "description": "An ID is deemed valid when there exists a node with that ID AND the node is from type RACING GAME.",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting a RACING GAME with valid ID",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"F1 2025\"\nWhen the user requests the \"RACING GAME\" \"F1 2025\"\nThen the response should return with status code 200\nAnd the response should return the \"RACING GAME\" \"F1 2025\""
+                        }
+                    ]
+                }, {
+                    "title": "Requests are rejected when there exists no RACING GAME with the provided ID",
+                    "description": "When there exists no node with the provided ID -> rejected.\nWhen there exists a node with the provided ID, but it is not from type RACING GAME -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Requesting a RACING GAME with invalid ID",
+                            
+                            "gherkin": "When the user requests a non-existing \"RACING GAME\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+}

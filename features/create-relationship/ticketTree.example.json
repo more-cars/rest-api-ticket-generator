@@ -1,0 +1,86 @@
+{
+    "epic": {
+        "jiraId": "MCA-218",
+        "dataStructure": null,
+        "stories": [{
+            "title": "Create RACING GAME-features-car-model-variant Relationship",
+            "userStory": null,
+            "specificationList": [
+                "The relationship ›features-car-model-variant‹ is created when the provided IDs of the RACING GAME and CAR MODEL VARIANT are valid. -> Status Code `201`",
+                "A successful request returns the ID of the created relationship, the relationship name and the relationship partner.",
+                "Requests with invalid IDs are rejected. This can happen when there exist no nodes with the given IDs or when those nodes are from the wrong type. -> Status Code `404`",
+                "The same ›features-car-model-variant‹ relationship between the same nodes can only be created once. Attempts to recreate them will be ignored. -> Status Code `304`",
+                "Each RACING GAME can be in a ›features-car-model-variant‹ relationship with multiple CAR MODEL VARIANTS"
+            ],
+            "apiVerb": "POST",
+            "apiPath": "/racing-games/<racing-game-id>/features-car-model-variant/<car-model-variant-id>",
+            "responseOptions": [
+                "201",
+                "304",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "Requests to create a ›features-car-model-variant‹ relationship are accepted when the provided data is valid",
+                    "description": "To be valid there need to exist nodes for the provided IDs and the nodes need to be from type RACING GAME resp. CAR MODEL VARIANT.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Creating a ›features-car-model-variant‹ relationship with valid IDs",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"Gran Turismo\"\nAnd there exists a \"CAR MODEL VARIANT\" \"Aston Martin DB7\"\nWhen the user creates a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7\"\nThen the request should be confirmed with status code 201\nAnd the response should contain the following keys\n| key                  |\n| relationship_id      |\n| relationship_name    |\n| relationship_partner |"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to create a ›features-car-model-variant‹ relationship are rejected when the provided data is invalid",
+                    "description": "There exists no RACING GAME with the provided ID? -> rejected.\nThere exists no CAR MODEL VARIANT with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to create a ›features-car-model-variant‹ relationship with invalid RACING GAME ID",
+                            
+                            "gherkin": "Given \"RACING GAME\" \"Gran Turismo\" does NOT exist\nAnd there exists a \"CAR MODEL VARIANT\" \"Aston Martin DB7\"\nWhen the user creates a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to create a ›features-car-model-variant‹ relationship with invalid CAR MODEL VARIANT ID",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"Gran Turismo\"\nAnd \"CAR MODEL VARIANT\" \"Aston Martin DB7\" does NOT exist\nWhen the user creates a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to create a ›features-car-model-variant‹ relationship where both IDs are invalid",
+                            
+                            "gherkin": "Given \"RACING GAME\" \"Gran Turismo\" does NOT exist\nAnd \"CAR MODEL VARIANT\" \"Aston Martin DB7\" does NOT exist\nWhen the user creates a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                },
+                {
+                    "title": "The same ›features-car-model-variant‹ relationship between the same nodes can only be created once",
+                    "description": "Requests to create the same relationship again are allowed, but they will not be processed. Consecutive attempts will always return an empty 304 response.",
+                    "responseCode": "304",
+                    "tests": [
+                        {
+                            "title": "Trying to create the same ›features-car-model-variant‹ relationship again",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"Gran Turismo\"\nAnd there exists a \"CAR MODEL VARIANT\" \"Aston Martin DB7\"\nAnd there exists a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7\"\nWhen the user creates a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7\"\nThen the response should return with status code 304"
+                        }
+                    ]
+                },
+
+                {
+                    "title": "Each RACING GAME can be in a ›features-car-model-variant‹ relationship with multiple CAR MODEL VARIANTS",
+                    "description": "There is no limit on the amount of relationships, they just need to be unique.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Creating multiple ›features-car-model-variant‹ relationships",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"Gran Turismo\"\nAnd there exists a \"CAR MODEL VARIANT\" \"Aston Martin DB7\"\nAnd there exists a \"CAR MODEL VARIANT\" \"Aston Martin DB7 (Alternative)\"\nWhen the user creates a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7\"\nAnd the user creates a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7 (Alternative)\"\nThen there should exist a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7\"\nAnd there should exist a \"features car model variant\" relationship between \"Gran Turismo\" and \"Aston Martin DB7 (Alternative)\""
+                        }
+                    ]
+                }
+
+            ]
+        }]
+    }
+}

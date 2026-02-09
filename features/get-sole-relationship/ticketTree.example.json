@@ -1,0 +1,60 @@
+{
+    "epic": {
+        "jiraId": "MCA-218",
+        "dataStructure": null,
+        "stories": [{
+            "title": "Get RACING GAME-has-prime-image Relationship",
+            "userStory": null,
+            "specificationList": [
+                "The ›has-prime-image‹ relationship for the selected RACING GAME is returned when one exists. -> Status Code `200`",
+                "The response contains the relationship ID, the relationship name and the relationship partner.",
+                "An empty response is returned when the selected RACING GAME has no ›has-prime-image‹ relationship. -> Status Code `200`",
+                "Requests with invalid ID are rejected. This can happen when there exists no node with the given ID or it is not a RACING GAME. -> Status Code `404`"
+            ],
+            "apiVerb": "GET",
+            "apiPath": "/racing-games/<racing-game-id>/has-prime-image",
+            "responseOptions": [
+                "200",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "The ›has-prime-image‹ relationship is returned when the provided data is valid",
+                    "description": "To be a valid request the provided ID has to point to a RACING GAME node that actually exists.",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting the ›has-prime-image‹ relationship when one exists",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"F1 2025\"\nAnd there exists a \"has prime image\" relationship \"R\" for \"F1 2025\"\nWhen the user requests the \"has prime image\" relationship for \"F1 2025\"\nThen the request should be confirmed with status code 200\nAnd the response should return the relationship \"R\""
+                        }
+                    ]
+                },
+                {
+                    "title": "An empty response is returned when there exists no ›has-prime-image‹ relationship for the given RACING GAME",
+                    "description": "",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting the ›has-prime-image‹ relationship when there exists none",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"F1 2025\"\nAnd there exists NO \"has prime image\" relationship for \"F1 2025\"\nWhen the user requests the \"has prime image\" relationship for \"F1 2025\"\nThen the request should be confirmed with status code 200\nBut the response should return an empty body"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to fetch the ›has-prime-image‹ relationship are rejected when the provided data is invalid",
+                    "description": "There exists no RACING GAME with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to fetch the ›has-prime-image‹ relationship with an invalid RACING GAME ID",
+                            
+                            "gherkin": "Given \"RACING GAME\" \"F1 2025\" does NOT exist\nWhen the user requests the \"has prime image\" relationship for \"F1 2025\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+}

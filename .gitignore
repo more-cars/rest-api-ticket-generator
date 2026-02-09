@@ -1,5 +1,8 @@
 # external dependencies
 /node_modules/
 
+# artifacts
+_temp
+
 # config files
 .env

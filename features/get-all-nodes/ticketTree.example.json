@@ -1,0 +1,46 @@
+{
+    "epic": {
+        "jiraId": "MCA-218",
+        "dataStructure": null,
+        "stories": [{
+            "title": "Get all RACING GAME Nodes",
+            "userStory": "As an API consumer\nI want to be able to load all RACING GAMES at once\nSo I can find out which even exist\nAnd to be able to compare and analyze them without having to load them all individually",
+            "specificationList": [
+                "A list of all RACING GAME nodes is returned when there exists at least 1. -> Status Code `200`",
+                "When no RACING GAMES exist then an empty list is returned. -> Status Code `200`",
+                "Each returned list item contains all specified properties (see corresponding 'epic' ticket).",
+                "Properties are returned, even when they are empty (optional fields). They are returned with value `null`."
+            ],
+            "apiVerb": "GET",
+            "apiPath": "/racing-games",
+            "responseOptions": [
+                "200"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "Requesting all nodes returns a list of RACING GAMES",
+                    "description": "In general, all existing RACING GAMES are to be returned. But, depending on the actual amount of nodes and other features that can restrict the returned collection (like pagination or soft-deleted nodes) the response might be truncated.",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting all RACING GAME nodes when at least 1 exists",
+                            
+                            "gherkin": "Given there exist 3 \"RACING GAME\"s\nWhen the user requests all \"RACING GAME\"s\nThen the response should return a collection of 3 \"RACING GAME\"s\nAnd the response should return with status code 200"
+                        }
+                    ]
+                }, {
+                    "title": "An empty list is returned when there exist no RACING GAMES",
+                    "description": "",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting all RACING GAME nodes when none exist",
+                            
+                            "gherkin": "Given there exist 0 \"RACING GAME\"s\nWhen the user requests all \"RACING GAME\"s\nThen the response should return a collection of 0 \"RACING GAME\"s\nAnd the response should return with status code 200"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+}

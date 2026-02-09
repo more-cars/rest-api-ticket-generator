@@ -1,0 +1,70 @@
+{
+    "epic": {
+        "jiraId": "MCA-218",
+        "dataStructure": null,
+        "stories": [{
+            "title": "Delete RACING GAME-features-car-model-variant Relationship",
+            "userStory": "As an API contributor\nI want to be able to disconnect CAR MODEL VARIANTS from RACING GAMES\nSo I can clean up bad data or test data",
+            "specificationList": [
+                "The ›features-car-model-variant‹ relationship is deleted when it actually exists. -> Status Code `204`",
+                "A successful request returns with an empty body.",
+                "Requests with invalid IDs are rejected. This can happen when there exist no nodes with the given IDs or when those nodes are from the wrong type. -> Status Code `404`",
+                "Requests are rejected when there exists no ›features-car-model-variant‹ relationship between the provided nodes. -> Status Code `404`"
+            ],
+            "apiVerb": "DELETE",
+            "apiPath": "/racing-games/<racing-game-id>/features-car-model-variant/<car-model-variant-id>",
+            "responseOptions": [
+                "204",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "The ›features-car-model-variant‹ relationship is deleted when the provided data is valid",
+                    "description": "To be valid there need to exist nodes for the provided IDs and the first node needs to be a RACING GAME and the second node needs to be a CAR MODEL VARIANT.",
+                    "responseCode": "204",
+                    "tests": [
+                        {
+                            "title": "Deleting the ›features-car-model-variant‹ relationship when it actually exists",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"F1 2025\"\nAnd there exists a \"CAR MODEL VARIANT\" \"Toyota Yaris\"\nAnd there exists a \"features car model variant\" relationship \"R\" between \"F1 2025\" and \"Toyota Yaris\"\nWhen the user deletes the \"features car model variant\" relationship between \"F1 2025\" and \"Toyota Yaris\"\nThen the request should be confirmed with status code 204\nAnd the relationship \"R\" should not exist anymore"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to delete the ›features-car-model-variant‹ relationship are rejected when the provided data is invalid",
+                    "description": "There exists no RACING GAME with the provided ID? -> rejected.\nThere exists no CAR MODEL VARIANT with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to delete a ›features-car-model-variant‹ relationship with invalid RACING GAME ID",
+                            
+                            "gherkin": "Given \"RACING GAME\" \"F1 2025\" does NOT exist\nAnd there exists a \"CAR MODEL VARIANT\" \"Toyota Yaris\"\nWhen the user deletes the \"features car model variant\" relationship between \"F1 2025\" and \"Toyota Yaris\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to delete a ›features-car-model-variant‹ relationship with invalid CAR MODEL VARIANT ID",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"F1 2025\"\nAnd \"CAR MODEL VARIANT\" \"Toyota Yaris\" does NOT exist\nWhen the user deletes the \"features car model variant\" relationship between \"F1 2025\" and \"Toyota Yaris\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to delete a ›features-car-model-variant‹ relationship where both IDs are invalid",
+                            
+                            "gherkin": "Given \"RACING GAME\" \"F1 2025\" does NOT exist\nAnd \"CAR MODEL VARIANT\" \"Toyota Yaris\" does NOT exist\nWhen the user deletes the \"features car model variant\" relationship between \"F1 2025\" and \"Toyota Yaris\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to delete the ›features-car-model-variant‹ relationship are rejected when the relationship does not exist",
+                    "description": "The relationship might have never existed or it has already been deleted. No matter the reason, an error will be returned.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to delete a non-existent ›features-car-model-variant‹ relationship",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"F1 2025\"\nAnd there exists a \"CAR MODEL VARIANT\" \"Toyota Yaris\"\nAnd there exists NO \"features car model variant\" relationship between \"F1 2025\" and \"Toyota Yaris\"\nWhen the user deletes the \"features car model variant\" relationship between \"F1 2025\" and \"Toyota Yaris\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+}

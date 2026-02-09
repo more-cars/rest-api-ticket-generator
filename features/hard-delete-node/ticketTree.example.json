@@ -1,0 +1,57 @@
+{
+    "epic": {
+        "jiraId": "MCA-218",
+        "dataStructure": null,
+        "stories": [{
+            "title": "Hard Delete RACING GAME Node",
+            "userStory": "As an API contributor\nI want to be able to delete a RACING GAME\nSo I can clean up bad data, test data or redundant data",
+            "specificationList": [
+                "The selected RACING GAME node is deleted when it actually exists. -> Status Code `204`",
+                "All attached relationships are also deleted when the node is deleted.",
+                "Requests with invalid ID are rejected. This case can happen when there exists no node with that ID or when the node is not from type RACING GAME. -> Status Code `404`"
+            ],
+            "apiVerb": "DELETE",
+            "apiPath": "/racing-games/<racing-game-id>",
+            "responseOptions": [
+                "204",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "Hard-deleting a RACING GAME permanently deletes it",
+                    "description": "The only way to recover a hard-deleted node is to restore the database.",
+                    "responseCode": "204",
+                    "tests": [
+                        {
+                            "title": "Hard-deleting an existing RACING GAME",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"F1 2025\"\nWhen the user hard-deletes the \"RACING GAME\" \"F1 2025\"\nThen the response should return with status code 204\nAnd the \"RACING GAME\" \"F1 2025\" should not exist anymore"
+                        }
+                    ]
+                }, {
+                    "title": "Requests are rejected when there exists no RACING GAME with the provided ID",
+                    "description": "When there exists no node with the provided ID -> rejected.\nWhen there exists a node with the provided ID, but it is not from type RACING GAME -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to hard-delete a non-existing RACING GAME",
+                            
+                            "gherkin": "Given \"RACING GAME\" \"F1 2025\" does NOT exist\nWhen the user hard-deletes the \"RACING GAME\" \"F1 2025\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }, {
+                    "title": "Hard-deleting a RACING GAME permanently deletes all attached relationships",
+                    "description": "This affects all attached relationships (no matter the type) - be it internal or public relationships. Features that rely on those relationships are responsible to copy, backup or persist the data themselves.",
+                    "responseCode": "204",
+                    "tests": [
+                        {
+                            "title": "Expecting all attached relationships to be removed when hard-deleting a RACING GAME",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"F1 2025\"\nAnd there exists a \"has image\" relationship \"R1\" for \"F1 2025\"\nAnd there exists a \"has prime image\" relationship \"R2\" for \"F1 2025\"\nWhen the user hard-deletes the \"RACING GAME\" \"F1 2025\"\nThen the \"RACING GAME\" \"F1 2025\" should not exist anymore\nAnd the relationship \"R1\" should not exist anymore\nAnd the relationship \"R2\" should not exist anymore"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+}

@@ -1,0 +1,60 @@
+{
+    "epic": {
+        "jiraId": "MCA-218",
+        "dataStructure": null,
+        "stories": [{
+            "title": "Get all RACING GAME-features-car-model-variant Relationships",
+            "userStory": null,
+            "specificationList": [
+                "A list of all ›features-car-model-variant‹ relationships for the selected RACING GAME is returned when there exists at least one of them. -> Status Code `200`",
+                "Each item in the list contains the relationship ID and the two node IDs, but not the nodes itself.",
+                "An empty list is returned when no ›features-car-model-variant‹ relationship exists. -> Status Code `200`",
+                "Requests with invalid ID are rejected. This can happen when there exists no node with the given ID or it is not a RACING GAME. -> Status Code `404`"
+            ],
+            "apiVerb": "GET",
+            "apiPath": "/racing-games/<racing-game-id>/features-car-model-variant",
+            "responseOptions": [
+                "200",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "A list of all ›features-car-model-variant‹ relationships is returned when the provided data is valid",
+                    "description": "To be a valid request the provided ID has to point to a RACING GAME node that actually exists.",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting the ›features-car-model-variant‹ relationships when at least one exists",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"Gran Turismo\"\nAnd there exist 3 \"features car model variant\" relationships for \"Gran Turismo\"\nWhen the user requests all \"features car model variant\" relationships for \"Gran Turismo\"\nThen the request should be confirmed with status code 200\nAnd the response should return a collection with 3 \"features car model variant\" relationships"
+                        }
+                    ]
+                },
+                {
+                    "title": "An empty list is returned when there exist no ›features-car-model-variant‹ relationships for the given RACING GAME",
+                    "description": "",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting the ›features-car-model-variant‹ relationships when there are none",
+                            
+                            "gherkin": "Given there exists a \"RACING GAME\" \"Gran Turismo\"\nAnd there exist 0 \"features car model variant\" relationships for \"Gran Turismo\"\nWhen the user requests all \"features car model variant\" relationships for \"Gran Turismo\"\nThen the request should be confirmed with status code 200\nAnd the response should return an empty list"
+                        }
+                    ]
+                },
+                {
+                    "title": "A request to fetch all ›features-car-model-variant‹ relationships is rejected when the provided data is invalid",
+                    "description": "There exists no RACING GAME with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to fetch the ›features-car-model-variant‹ relationships with an invalid RACING GAME ID",
+                            
+                            "gherkin": "Given \"RACING GAME\" \"Gran Turismo\" does NOT exist\nWhen the user requests all \"features car model variant\" relationships for \"Gran Turismo\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+}

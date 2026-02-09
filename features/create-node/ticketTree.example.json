@@ -1,0 +1,116 @@
+
+{
+    "epic": {
+        "jiraId": "MCA-218",
+        "dataStructure": [
+  {
+    "name": "name",
+    "mandatory": true,
+    "datatype": "string",
+    "example": "Forza Motorsport 7"
+  },
+  {
+    "name": "release_year",
+    "mandatory": false,
+    "datatype": "number",
+    "example": "2017"
+  },
+  {
+    "name": "developer",
+    "mandatory": false,
+    "datatype": "string",
+    "example": "Turn 10 Studios"
+  },
+  {
+    "name": "publisher",
+    "mandatory": false,
+    "datatype": "string",
+    "example": "Microsoft Studios"
+  }
+],
+        "stories": [{
+            "title": "Create RACING GAME Node",
+            "userStory": "As an API contributor\nI want to be able to create RACING GAMES\nSo I can fill gaps in the database",
+            "specificationList": [
+                "A RACING GAME node is successfully created when the request contains valid data. The required data structure is specified in parent (epic) ticket MCA-218. -> Status Code `201`",
+                "A successful request returns the created node with all specified properties.",
+                "Properties are returned, even when they are empty (optional fields). They are returned with value `null`.",
+                "Unknown properties are ignored. They are not processed. They do not produce any info, warning or error messages for the user. -> Status Code `201`",
+                "Read-only properties (`id`, `created_at`, `updated_at`) are ignored. They are not processed. They do not produce any info, warning or error messages for the user. -> Status Code `201`",
+                "Requests with invalid data are rejected. Cases for invalid data include: missing mandatory fields, syntax errors, wrong data types or wrong data structure. -> Status Code `400`"
+            ],
+            "apiVerb": "POST",
+            "apiPath": "/racing-game",
+            "responseOptions": [
+                "201",
+                "400"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "Requests to create a RACING GAME are accepted when the provided data is valid",
+                    "description": "Data is valid when its structure is correct, has no syntax errors and contains all mandatory fields.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Creating a RACING GAME with valid data",
+                            
+                            "gherkin": "When the user creates a \"RACING GAME\" \"F1 2025\" with the following data\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | string |\n  | release_year | 2017 | number |\n  | developer | Turn 10 Studios | string |\n  | publisher | Microsoft Studios | string |\nThen the request should be confirmed with status code 201\nAnd the response should return the \"RACING GAME\" \"F1 2025\""
+                        }
+                    ]
+                }, {
+                    "title": "Requests to create a RACING GAME are rejected when the provided data is invalid",
+                    "description": "Data is invalid when its structure is incorrect, has syntax errors or does not contain all mandatory fields.",
+                    "responseCode": "400",
+                    "tests": [
+                        {
+                            "title": "Trying to create a RACING GAME with missing mandatory information",
+                            
+                            "gherkin": "When the user tries to create a \"RACING GAME\" \"F1 2025\" with the following data\n  | key | value | datatype |\nThen the request should be rejected with status code 400"
+                        }, {
+                            "title": "Trying to create a RACING GAME with invalid data types",
+                            
+                            "gherkin": "When the user tries to create a \"RACING GAME\" \"F1 2025\" with the following data\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | boolean |\n  | release_year | 2017 | boolean |\n  | developer | Turn 10 Studios | boolean |\n  | publisher | Microsoft Studios | boolean |\nThen the request should be rejected with status code 400"
+                        }
+                    ]
+                }, {
+                    "title": "The response contains all specified properties when creating a RACING GAME",
+                    "description": "All properties are returned that are specified in the epic MCA-218. When properties are empty they are returned with null values. IDs, timestamp and other meta information might be included too, but is not in the scope of this AC.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Expecting all properties to be returned when creating a RACING GAME",
+                            
+                            "gherkin": "When the user creates a \"RACING GAME\" \"F1 2025\" with the following data\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | string |\n  | release_year | 2017 | number |\n  | developer | Turn 10 Studios | string |\n  | publisher | Microsoft Studios | string |\nThen the response should contain the following properties\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | string |\n  | release_year | 2017 | number |\n  | developer | Turn 10 Studios | string |\n  | publisher | Microsoft Studios | string |"
+                        }, {
+                            "title": "Expecting empty properties to be returned as null values when creating a RACING GAME",
+                            
+                            "gherkin": "When the user creates a \"RACING GAME\" \"F1 2025\" with the following data\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | string |\nThen the response should contain the following properties\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | string |\n  | release_year |  | number |\n  | developer |  | string |\n  | publisher |  | string |"
+                        }
+                    ]
+                }, {
+                    "title": "Unknown properties are ignored when creating a RACING GAME",
+                    "description": "The user can provide properties that are not specified in the epic MCA-218, but they will be completely ignored. They will not be processed and there will be no info, warning or error that they were skipped.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Expecting unknown properties to be ignored when creating a RACING GAME",
+                            
+                            "gherkin": "When the user creates a \"RACING GAME\" \"F1 2025\" with the following data\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | string |\n  | release_year | 2017 | number |\n  | developer | Turn 10 Studios | string |\n  | publisher | Microsoft Studios | string |\n  | thimbleweed | park | string |\nThen the response should contain the following properties\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | string |\n  | release_year | 2017 | number |\n  | developer | Turn 10 Studios | string |\n  | publisher | Microsoft Studios | string |\nAnd the response should NOT contain the following keys\n  | key         |\n  | thimbleweed |"
+                        }
+                    ]
+                }, {
+                    "title": "Read-only properties cannot be overridden by the user when creating a RACING GAME",
+                    "description": "Read-only properties are for example `ID`, `created_at` and `updated_at`. Analog to unknown properties, those fields will be ignored. They will not be processed and there will be no info, warning or error that they were skipped.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Expecting read-only properties to be ignored when creating a RACING GAME",
+                            
+                            "gherkin": "When the user creates a \"RACING GAME\" \"F1 2025\" with the following data\n  | key | value | datatype |\n  | name | Forza Motorsport 7 | string |\n  | release_year | 2017 | number |\n  | developer | Turn 10 Studios | string |\n  | publisher | Microsoft Studios | string |\n  | id         | 1234       | number   |\n  | created_at | 2025-01-01 | string   |\n  | updated_at | 2025-01-01 | string   |\nThen the response should contain the following keys\n  | key        |\n  | id         |\n  | created_at |\n  | updated_at |\nBut the response should NOT contain the following properties\n  | key        | value      | datatype |\n  | id         | 1234       | number   |\n  | created_at | 2025-01-01 | string   |\n  | updated_at | 2025-01-01 | string   |"
+                        }
+                    ]
+                }
+            ]
+        }]
+    }
+}
