@@ -1,0 +1,13 @@
+mutation {
+    createTest(
+        testType: { name: "Cucumber" },
+        gherkin: "$gherkin",
+        jira: {
+            fields: { summary:"$title", project: {key: "MCA"} }
+        }
+    ) {
+        test {
+            jira(fields: ["key"])
+        }
+    }
+}
