@@ -44,7 +44,7 @@ to: _temp/ticketTree.json
                                 gherkin.push('| key                  |')
                                 gherkin.push('| relationship_id      |')
                                 gherkin.push('| relationship_name    |')
-                                gherkin.push('| relationship_partner |')
+                                gherkin.push('| partner_node |')
                             %>
                             "gherkin": "<%- gherkin.join('\\n') %>"
                         }
