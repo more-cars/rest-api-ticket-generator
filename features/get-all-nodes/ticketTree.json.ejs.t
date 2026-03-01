@@ -30,7 +30,7 @@ to: _temp/ticketTree.json
                             <%
                                 gherkin = []
                                 gherkin.push('Given there exist 3 \\"' + h.changeCase.upper(nodeType) + '\\"s')
-                                gherkin.push('When the user requests all \\"' + h.changeCase.upper(nodeType) + '\\"s')
+                                gherkin.push('When the user requests a \\"' + h.changeCase.upper(nodeType) + '\\" collection')
                                 gherkin.push('Then the response should return a collection of 3 \\"' + h.changeCase.upper(nodeType) + '\\"s')
                                 gherkin.push('And the response should return with status code 200')
                             %>
@@ -47,7 +47,7 @@ to: _temp/ticketTree.json
                             <%
                                 gherkin = []
                                 gherkin.push('Given there exist 0 \\"' + h.changeCase.upper(nodeType) + '\\"s')
-                                gherkin.push('When the user requests all \\"' + h.changeCase.upper(nodeType) + '\\"s')
+                                gherkin.push('When the user requests a \\"' + h.changeCase.upper(nodeType) + '\\" collection')
                                 gherkin.push('Then the response should return a collection of 0 \\"' + h.changeCase.upper(nodeType) + '\\"s')
                                 gherkin.push('And the response should return with status code 200')
                             %>
