@@ -5,10 +5,6 @@ module.exports = {
             name: 'nodeType',
             type: 'input',
         }, {
-            message: 'ID of the corresponding parent (epic) ticket? (e.g. "MCA-498")',
-            name: 'epicId',
-            type: 'input',
-        }, {
             message: 'Example name/title/label to be used in the tests? (e.g. "Formula 1")',
             name: 'exampleName',
             type: 'input',
@@ -16,6 +12,10 @@ module.exports = {
             message: 'Please list all properties that the user is allowed to modify (comma-separated list):',
             name: 'properties',
             type: 'list',
+        }, {
+            message: 'ID of the corresponding parent (epic) ticket? (e.g. "MCA-498")',
+            name: 'epicId',
+            type: 'input',
         }]
 
         return inquirer

@@ -10,6 +10,11 @@ module.exports = [
         type: 'input',
     },
     {
+        message: "Name of the relationship?",
+        name: 'relationshipName',
+        type: 'input',
+    },
+    {
         message: "Node type of the relationship partner?",
         name: 'endNodeType',
         type: 'input',
@@ -17,11 +22,6 @@ module.exports = [
     {
         message: 'What is a good example for the name of the partner node?',
         name: 'endNodeExampleName',
-        type: 'input',
-    },
-    {
-        message: "Name of the relationship?",
-        name: 'relationshipName',
         type: 'input',
     },
     {
