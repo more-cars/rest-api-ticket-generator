@@ -23,7 +23,7 @@ to: _temp/ticketTree.json
                 "Requests with invalid data are rejected. Cases for invalid data include: missing mandatory fields, syntax errors, wrong data types or wrong data structure. -> Status Code `400`"
             ],
             "apiVerb": "POST",
-            "apiPath": "/<%= h.changeCase.kebab(nodeType) %>",
+            "apiPath": "/<%= h.changeCase.kebab(h.inflection.pluralize(nodeType)) %>",
             "responseOptions": [
                 "201",
                 "400"
