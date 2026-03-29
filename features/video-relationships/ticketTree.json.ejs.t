@@ -231,7 +231,7 @@ to: _temp/ticketTree.json
                                 gherkin.push('Given there exists a \\"' + h.changeCase.upper(startNodeType) + '\\" \\"' + startNodeExampleName + '\\"')
                                 gherkin.push('And there exists a \\"VIDEO\\" \\"Promo Video\\"')
                                 gherkin.push('And there exists a \\"has-video\\" relationship \\"R\\" between \\"' + startNodeExampleName + '\\" and \\"Promo Video\\"')
-                                gherkin.push('When the user deletes the \\""has-video"\\" relationship between \\"' + startNodeExampleName + '\\" and \\"Promo Video\\"')
+                                gherkin.push('When the user deletes the \\"has-video\\" relationship between \\"' + startNodeExampleName + '\\" and \\"Promo Video\\"')
                                 gherkin.push('Then the request should be confirmed with status code 204')
                                 gherkin.push('And the relationship \\"R\\" should not exist anymore')
                             %>
