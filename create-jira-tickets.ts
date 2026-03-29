@@ -36,6 +36,7 @@ async function promptFeature() {
         {value: 'get-all-relationships'},
         {value: 'get-sole-relationship'},
         {value: 'delete-relationship'},
+        {value: 'video-relationships'},
     ]
 
     return select({
