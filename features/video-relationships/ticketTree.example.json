@@ -1,0 +1,400 @@
+{
+    "epic": {
+        "jiraId": "MCA-71",
+        "dataStructure": null,
+        "stories": [
+        {
+            "title": "Create BRAND-has-video Relationship",
+            "userStory": "As an API contributor\nI want to be able to attach VIDEOS to a BRAND\nSo an API consumer can illustrate the BRAND node in a frontend application",
+            "specificationList": [
+                "The relationship ›has-video‹ is created when the provided IDs of the BRAND and VIDEO are valid. -> Status Code `201`",
+                "A successful request returns the ID of the created relationship, the relationship name and the relationship partner.",
+                "Requests with invalid IDs are rejected. This can happen when there exist no nodes with the given IDs or when those nodes are from the wrong type. -> Status Code `404`",
+                "The same ›has-video‹ relationship between the same nodes can only be created once. Attempts to recreate them will be ignored. -> Status Code `304`",
+                "Each BRAND can be in a ›has-video‹ relationship with multiple VIDEOS"
+            ],
+            "apiVerb": "POST",
+            "apiPath": "/brands/<brand-id>/has-video/<video-id>",
+            "responseOptions": [
+                "201",
+                "304",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "Requests to create a ›has-video‹ relationship are accepted when the provided data is valid",
+                    "description": "To be valid there need to exist nodes for the provided IDs and the nodes need to be from type BRAND resp. VIDEO.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Creating a ›has-video‹ relationship with valid IDs",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nWhen the user creates a \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be confirmed with status code 201\nAnd the response should contain the following keys\n| key                  |\n| relationship_id      |\n| relationship_name    |\n| start_node           |\n| partner_node         |"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to create a ›has-video‹ relationship are rejected when the provided data is invalid",
+                    "description": "There exists no BRAND with the provided ID? -> rejected.\nThere exists no VIDEO with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to create a ›has-video‹ relationship with invalid BRAND ID",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nAnd there exists a \"VIDEO\" \"Promo Video\"\nWhen the user creates a \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to create a ›has-video‹ relationship with invalid VIDEO ID",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd \"VIDEO\" \"Promo Video\" does NOT exist\nWhen the user creates a \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to create a ›has-video‹ relationship where both IDs are invalid",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nAnd \"VIDEO\" \"Promo Video\" does NOT exist\nWhen the user creates a \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                },
+                {
+                    "title": "The same ›has-video‹ relationship between the same nodes can only be created once",
+                    "description": "Requests to create the same relationship again are allowed, but they will not be processed. Consecutive attempts will always return an empty 304 response.",
+                    "responseCode": "304",
+                    "tests": [
+                        {
+                            "title": "Trying to create the same ›has-video‹ relationship again",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nAnd there exists a \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nWhen the user creates a \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the response should return with status code 304"
+                        }
+                    ]
+                },
+                {
+                    "title": "Each BRAND can be in a ›has-video‹ relationship with multiple VIDEOS",
+                    "description": "There is no limit on the amount of relationships, they just need to be unique.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Creating multiple ›has-video‹ relationships",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nAnd there exists a \"VIDEO\" \"Promo Video (Part 2)\"\nWhen the user creates a \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nAnd the user creates a \"has-video\" relationship between \"BMW\" and \"Promo Video (Part 2)\"\nThen there should exist a \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nAnd there should exist a \"has-video\" relationship between \"BMW\" and \"Promo Video (Part 2)\""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Get all BRAND-has-video Relationships",
+            "userStory": "As an API consumer\nI want to be able to fetch all VIDEOS that are connected to a BRAND\nSo I can find out more about it - be it in form of a review, a promo video or a podcast",
+            "specificationList": [
+                "A list of all ›has-video‹ relationships for the selected BRAND is returned when there exists at least one of them. -> Status Code `200`",
+                "Each item in the list contains the ID of the created relationship, the relationship name and the relationship partner.",
+                "An empty list is returned when no ›has-video‹ relationship exists. -> Status Code `200`",
+                "Requests with invalid ID are rejected. This can happen when there exists no node with the given ID or it is not a BRAND. -> Status Code `404`"
+            ],
+            "apiVerb": "GET",
+            "apiPath": "/brands/<brand-id>/has-video",
+            "responseOptions": [
+                "200",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "A list of all ›has-video‹ relationships is returned when the provided data is valid",
+                    "description": "To be a valid request the provided ID has to point to a BRAND node that actually exists.",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting the ›has-video‹ relationships when at least one exists",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exist 3 \"has-video\" relationships for \"BMW\"\nWhen the user requests all \"has-video\" relationships for \"BMW\"\nThen the request should be confirmed with status code 200\nAnd the response should return a collection with 3 \"has-video\" relationships"
+                        }
+                    ]
+                },
+                {
+                    "title": "An empty list is returned when there exist no ›has-video‹ relationships for the given BRAND",
+                    "description": "",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting the ›has-video‹ relationships when there are none",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exist 0 \"has-video\" relationships for \"BMW\"\nWhen the user requests all \"has-video\" relationships for \"BMW\"\nThen the request should be confirmed with status code 200\nAnd the response should return an empty list"
+                        }
+                    ]
+                },
+                {
+                    "title": "A request to fetch all ›has-video‹ relationships is rejected when the provided data is invalid",
+                    "description": "There exists no BRAND with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to fetch the ›has-video‹ relationships with an invalid BRAND ID",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nWhen the user requests all \"has-video\" relationships for \"BMW\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Delete BRAND-has-video Relationship",
+            "userStory": "As an API contributor\nI want to be able to disconnect VIDEOS from BRANDS\nSo I can clean up bad data or test data",
+            "specificationList": [
+                "The ›has-video‹ relationship is deleted when it actually exists. -> Status Code `204`",
+                "A successful request returns with an empty response.",
+                "Requests with invalid IDs are rejected. This can happen when there exist no nodes with the given IDs or when those nodes are from the wrong type. -> Status Code `404`",
+                "Requests are rejected when there exists no ›has-video‹ relationship between the provided nodes. -> Status Code `404`"
+            ],
+            "apiVerb": "DELETE",
+            "apiPath": "/brands/<brand-id>/has-video/<video-id>",
+            "responseOptions": [
+                "204",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "The ›has-video‹ relationship is deleted when the provided data is valid",
+                    "description": "To be valid there need to exist nodes for the provided IDs and the first node needs to be a BRAND and the second node needs to be a VIDEO.",
+                    "responseCode": "204",
+                    "tests": [
+                        {
+                            "title": "Deleting the ›has-video‹ relationship when it actually exists",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nAnd there exists a \"has-video\" relationship \"R\" between \"BMW\" and \"Promo Video\"\nWhen the user deletes the \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be confirmed with status code 204\nAnd the relationship \"R\" should not exist anymore"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to delete the ›has-video‹ relationship are rejected when the provided data is invalid",
+                    "description": "There exists no BRAND with the provided ID? -> rejected.\nThere exists no VIDEO with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to delete a ›has-video‹ relationship with invalid BRAND ID",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nAnd there exists a \"VIDEO\" \"Promo Video\"\nWhen the user deletes the \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to delete a ›has-video‹ relationship with invalid VIDEO ID",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd \"VIDEO\" \"Promo Video\" does NOT exist\nWhen the user deletes the \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to delete a ›has-video‹ relationship where both IDs are invalid",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nAnd \"VIDEO\" \"Promo Video\" does NOT exist\nWhen the user deletes the \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to delete the ›has-video‹ relationship are rejected when the relationship does not exist",
+                    "description": "The relationship might have never existed or it has already been deleted. No matter the reason, an error will be returned.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to delete a non-existent ›has-video‹ relationship",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nAnd there exists NO \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nWhen the user deletes the \"has-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Create BRAND-has-main-video Relationship",
+            "userStory": "As an API contributor\nI want to be able to select the main VIDEO of a BRAND\nSo an API consumer can instantly load the VIDEO that best represents the BRAND",
+            "specificationList": [
+                "The relationship ›has-main-video‹ is created when the provided IDs of the BRAND and VIDEO are valid. -> Status Code `201`",
+                "A successful request returns the ID of the created relationship, the relationship name and the relationship partner.",
+                "Requests with invalid IDs are rejected. This can happen when there exist no nodes with the given IDs or when those nodes are from the wrong type. -> Status Code `404`",
+                "The same ›has-main-video‹ relationship between the same nodes can only be created once. Attempts to recreate them will be ignored. -> Status Code `304`",
+                "At the same time a BRAND can only be in a ›has-main-video‹ relationship with one VIDEO"
+            ],
+            "apiVerb": "POST",
+            "apiPath": "/brands/<brand-id>/has-main-video/<video-id>",
+            "responseOptions": [
+                "201",
+                "304",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "Requests to create a ›has-main-video‹ relationship are accepted when the provided data is valid",
+                    "description": "To be valid there need to exist nodes for the provided IDs and the nodes need to be from type BRAND resp. VIDEO.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Creating a ›has-main-video‹ relationship with valid IDs",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nWhen the user creates a \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be confirmed with status code 201\nAnd the response should contain the following keys\n| key                  |\n| relationship_id      |\n| relationship_name    |\n| start_node           |\n| partner_node         |"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to create a ›has-main-video‹ relationship are rejected when the provided data is invalid",
+                    "description": "There exists no BRAND with the provided ID? -> rejected.\nThere exists no VIDEO with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to create a ›has-main-video‹ relationship with invalid BRAND ID",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nAnd there exists a \"VIDEO\" \"Promo Video\"\nWhen the user creates a \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to create a ›has-main-video‹ relationship with invalid VIDEO ID",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd \"VIDEO\" \"Promo Video\" does NOT exist\nWhen the user creates a \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to create a ›has-main-video‹ relationship where both IDs are invalid",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nAnd \"VIDEO\" \"Promo Video\" does NOT exist\nWhen the user creates a \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                },
+                {
+                    "title": "The same ›has-main-video‹ relationship between the same nodes can only be created once",
+                    "description": "Requests to create the same relationship again are allowed, but they will not be processed. Consecutive attempts will always return an empty 304 response.",
+                    "responseCode": "304",
+                    "tests": [
+                        {
+                            "title": "Trying to create the same ›has-main-video‹ relationship again",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nAnd there exists a \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nWhen the user creates a \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the response should return with status code 304"
+                        }
+                    ]
+                },
+                {
+                    "title": "At the same time, each BRAND can only be in a ›has-main-video‹ relationship with one VIDEO",
+                    "description": "Connecting a different VIDEO will delete the previous relationship.",
+                    "responseCode": "201",
+                    "tests": [
+                        {
+                            "title": "Creating a ›has-main-video‹ relationship with a different VIDEO",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nAnd there exists a \"VIDEO\" \"Promo Video (Part 2)\"\nWhen the user creates a \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen there should exist a \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nWhen the user creates a \"has-main-video\" relationship between \"BMW\" and \"Promo Video (Part 2)\"\nThen there should exist a \"has-main-video\" relationship between \"BMW\" and \"Promo Video (Part 2)\"\nBut there should exist NO \"has-main-video\" relationship between \"BMW\" and \"Promo Video\""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Get BRAND-has-main-video Relationship",
+            "userStory": "As an API consumer\nI want to be able to get the main VIDEO of a BRAND\nSo I can instantly load the VIDEO that best represents the BRAND",
+            "specificationList": [
+                "The ›has-main-video‹ relationship for the selected BRAND is returned when one exists. -> Status Code `200`",
+                "The response contains the relationship ID, the relationship name and the relationship partner.",
+                "An empty response is returned when the selected BRAND has no ›has-main-video‹ relationship. -> Status Code `200`",
+                "Requests with invalid ID are rejected. This can happen when there exists no node with the given ID or it is not a BRAND. -> Status Code `404`"
+            ],
+            "apiVerb": "GET",
+            "apiPath": "/brands/<brand-id>/has-main-video",
+            "responseOptions": [
+                "200",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "The ›has-main-video‹ relationship is returned when the provided data is valid",
+                    "description": "To be a valid request the provided ID has to point to a BRAND node that actually exists.",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting the ›has-main-video‹ relationship when one exists",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"has-main-video\" relationship \"R\" for \"BMW\"\nWhen the user requests the \"has-main-video\" relationship for \"BMW\"\nThen the request should be confirmed with status code 200\nAnd the response should return the relationship \"R\""
+                        }
+                    ]
+                },
+                {
+                    "title": "An empty response is returned when there exists no ›has-main-video‹ relationship for the given BRAND",
+                    "description": "",
+                    "responseCode": "200",
+                    "tests": [
+                        {
+                            "title": "Requesting the ›has-main-video‹ relationship when there exists none",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists NO \"has-main-video\" relationship for \"BMW\"\nWhen the user requests the \"has-main-video\" relationship for \"BMW\"\nThen the request should be confirmed with status code 200\nBut the response should return an empty body"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to fetch the ›has-main-video‹ relationship are rejected when the provided data is invalid",
+                    "description": "There exists no BRAND with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to fetch the ›has-main-video‹ relationship with an invalid BRAND ID",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nWhen the user requests the \"has-main-video\" relationship for \"BMW\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Delete BRAND-has-main-video Relationship",
+            "userStory": "As an API contributor\nI want to be able to disconnect the main VIDEO from a BRAND\nSo I can clean up bad data or test data",
+            "specificationList": [
+                "The ›has-main-video‹ relationship is deleted when it actually exists. -> Status Code `204`",
+                "A successful request returns with an empty response.",
+                "Requests with invalid IDs are rejected. This can happen when there exist no nodes with the given IDs or when those nodes are from the wrong type. -> Status Code `404`",
+                "Requests are rejected when there exists no ›has-main-video‹ relationship between the provided nodes. -> Status Code `404`"
+            ],
+            "apiVerb": "DELETE",
+            "apiPath": "/brands/<brand-id>/has-main-video/<video-id>",
+            "responseOptions": [
+                "204",
+                "404"
+            ],
+            "acceptanceCriteria": [
+                {
+                    "title": "The ›has-main-video‹ relationship is deleted when the provided data is valid",
+                    "description": "To be valid there need to exist nodes for the provided IDs and the first node needs to be a BRAND and the second node needs to be a VIDEO.",
+                    "responseCode": "204",
+                    "tests": [
+                        {
+                            "title": "Deleting the ›has-main-video‹ relationship when it actually exists",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nAnd there exists a \"has-main-video\" relationship \"R\" between \"BMW\" and \"Promo Video\"\nWhen the user deletes the \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be confirmed with status code 204\nAnd the relationship \"R\" should not exist anymore"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to delete the ›has-main-video‹ relationship are rejected when the provided data is invalid",
+                    "description": "There exists no BRAND with the provided ID? -> rejected.\nThere exists no VIDEO with the provided ID? -> rejected.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to delete a ›has-main-video‹ relationship with invalid BRAND ID",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nAnd there exists a \"VIDEO\" \"Promo Video\"\nWhen the user deletes the \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to delete a ›has-main-video‹ relationship with invalid VIDEO ID",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd \"VIDEO\" \"Promo Video\" does NOT exist\nWhen the user deletes the \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        },
+                        {
+                            "title": "Trying to delete a ›has-main-video‹ relationship where both IDs are invalid",
+                            
+                            "gherkin": "Given \"BRAND\" \"BMW\" does NOT exist\nAnd \"VIDEO\" \"Promo Video\" does NOT exist\nWhen the user deletes the \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                },
+                {
+                    "title": "Requests to delete the ›has-main-video‹ relationship are rejected when the relationship does not exist",
+                    "description": "The relationship might have never existed or it has already been deleted. No matter the reason, an error will be returned.",
+                    "responseCode": "404",
+                    "tests": [
+                        {
+                            "title": "Trying to delete a non-existent ›has-main-video‹ relationship",
+                            
+                            "gherkin": "Given there exists a \"BRAND\" \"BMW\"\nAnd there exists a \"VIDEO\" \"Promo Video\"\nAnd there exists NO \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nWhen the user deletes the \"has-main-video\" relationship between \"BMW\" and \"Promo Video\"\nThen the request should be rejected with status code 404"
+                        }
+                    ]
+                }
+            ]
+        }
+        ]
+    }
+}
