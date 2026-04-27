@@ -1,6 +1,6 @@
 export type PropertyDataStructure = {
     name: string
+    datatype: 'string' | 'number' | 'boolean'
     mandatory: boolean
-    datatype: string
-    example: string
+    example: string | number | boolean
 }
