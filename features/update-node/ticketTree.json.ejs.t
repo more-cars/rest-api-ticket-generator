@@ -13,6 +13,8 @@ to: _temp/ticketTree.json
                 "A <%= h.changeCase.upper(nodeType) %> node is successfully updated when the request contains valid data. The required data structure is specified in parent (epic) ticket <%= h.changeCase.upper(h.changeCase.kebab(epicId)) %>. -> Status Code `201`",
                 "A successful request returns the updated node with all properties that are officially specified.",
                 "The `updated_at` timestamp will be updated, the `created_at` timestamp not.",
+                "Mandatory properties can be overwritten, but not removed. -> Status Code `400`",
+                "Optional properties can be overwritten or removed. -> Status Code `201`",
                 "Unknown properties are ignored. They are not processed. They do not produce any info, warning or error messages for the user. -> Status Code `201`",
                 "Read-only properties (`id`, `created_at`, `updated_at`) are ignored. They are not processed. They do not produce any info, warning or error messages for the user. -> Status Code `201`",
                 "Requests with invalid ID are rejected. This case can happen when there exists no node with that ID or when the node is not from type <%= h.changeCase.upper(nodeType) %>. -> Status Code `404`",
@@ -84,26 +86,11 @@ to: _temp/ticketTree.json
                     "responseCode": "400",
                     "tests": [
                         {
-                            "title": "Trying to delete a mandatory field while updating a <%= h.changeCase.upper(nodeType) %>.",
-                            <%
-                                gherkin = []
-                                gherkin.push('Given there exists a \\"' + h.changeCase.upper(nodeType) + '\\" \\"' + exampleName + '\\"')
-                                gherkin.push('When the user tries to update the node \\"' + exampleName + '\\" with the following data')
-                                gherkin.push('  | key | value |')
-                                properties.forEach(prop => {
-                                    if (prop.mandatory) {
-                                        gherkin.push('  | ' + prop.name + ' |       |')
-                                    }
-                                })
-                                gherkin.push('Then the request should be rejected with status code 400')
-                            %>
-                            "gherkin": "<%- gherkin.join('\\n') %>"
-                        }, {
                             "title": "Trying to update a <%= h.changeCase.upper(nodeType) %> with invalid data types",
                             <%
                                 gherkin = []
                                 gherkin.push('Given there exists a \\"' + h.changeCase.upper(nodeType) + '\\" \\"' + exampleName + '\\"')
-                                gherkin.push('When the user tries to update the node \\"' + exampleName + '\\" with the following data')
+                                gherkin.push('When the user updates the node \\"' + exampleName + '\\" with the following data')
                                 gherkin.push('  | key | value |')
                                 properties.forEach(prop => {
                                     if (prop.datatype === 'string') {
@@ -212,6 +199,28 @@ to: _temp/ticketTree.json
                                 gherkin.push('  | key        | value      |')
                                 gherkin.push('  | created_at | 2025-01-01 |')
                                 gherkin.push('  | updated_at | 2025-01-01 |')
+                            %>
+                            "gherkin": "<%- gherkin.join('\\n') %>"
+                        }
+                    ]
+                }, {
+                    "title": "Mandatory properties cannot be removed from a <%= h.changeCase.upper(nodeType) %>",
+                    "description": "A mandatory property may be updated, but not be deleted.",
+                    "responseCode": "400",
+                    "tests": [
+                        {
+                            "title": "Trying to delete a mandatory field while updating a <%= h.changeCase.upper(nodeType) %>.",
+                            <%
+                                gherkin = []
+                                gherkin.push('Given there exists a \\"' + h.changeCase.upper(nodeType) + '\\" \\"' + exampleName + '\\"')
+                                gherkin.push('When the user updates the node \\"' + exampleName + '\\" with the following data')
+                                gherkin.push('  | key | value |')
+                                properties.forEach(prop => {
+                                    if (prop.mandatory) {
+                                        gherkin.push('  | ' + prop.name + ' |       |')
+                                    }
+                                })
+                                gherkin.push('Then the request should be rejected with status code 400')
                             %>
                             "gherkin": "<%- gherkin.join('\\n') %>"
                         }
