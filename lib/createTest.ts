@@ -22,6 +22,6 @@ export async function createTest(data: Test): Promise<string> {
     })
 
     const responseData = await response.json()
-    console.log(responseData.data)
+
     return responseData.data.createTest.test.jira.key
 }
