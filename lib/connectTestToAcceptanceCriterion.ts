@@ -1,10 +1,14 @@
-import axios from "axios"
 import {getJiraApiBaseUrl} from "./getJiraApiBaseUrl"
 import {getJiraApiAuthKey} from "./getJiraApiAuthKey"
 
 export async function connectTestToAcceptanceCriterion(testId: string, acceptanceCriterion: string) {
-    await axios
-        .post(getJiraApiBaseUrl() + 'issueLink', {
+    await fetch(getJiraApiBaseUrl() + 'issueLink', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${getJiraApiAuthKey()}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
             type: {
                 name: "Test"
             },
@@ -14,10 +18,6 @@ export async function connectTestToAcceptanceCriterion(testId: string, acceptanc
             outwardIssue: {
                 key: acceptanceCriterion,
             },
-        }, {
-            headers: {
-                'Authorization': `Basic ${getJiraApiAuthKey()}`,
-                'Content-Type': 'application/json',
-            }
         })
+    })
 }

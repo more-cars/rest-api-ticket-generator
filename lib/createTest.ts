@@ -1,4 +1,3 @@
-import axios from "axios"
 import type {Test} from "./types/Test"
 import {loadGraphqlQuery} from "./loadGraphqlQuery"
 import {getXrayGraphqlUrl} from "./getXrayGraphqlUrl"
@@ -11,14 +10,18 @@ export async function createTest(data: Test): Promise<string> {
     query = query.replace('$gherkin', gherkin)
     query = query.replace('$title', data.title)
 
-    const xrayResponse = await axios
-        .post(getXrayGraphqlUrl(), {
-            query
-        }, {
-            headers: {
-                'Authorization': `Bearer ${await obtainXrayApiToken()}`
-            }
+    const response = await fetch(getXrayGraphqlUrl(), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${await obtainXrayApiToken()}`
+        },
+        body: JSON.stringify({
+            query: query,
         })
+    })
 
-    return xrayResponse.data.data.createTest.test.jira.key
+    const responseData = await response.json()
+    console.log(responseData.data)
+    return responseData.data.createTest.test.jira.key
 }
