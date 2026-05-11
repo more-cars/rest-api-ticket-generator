@@ -2,11 +2,12 @@
   "author": "Dennis Gerike",
   "dependencies": {
     "@inquirer/prompts": "8.2.0",
+    "@types/node": "25.6.2",
     "axios": "1.13.5",
     "hygen": "6.2.11",
     "inquirer": "13.2.2",
     "ts-node": "10.9.2",
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
   },
   "description": "Ticket generator for all API-related features in 'More Cars'",
   "engines": {
