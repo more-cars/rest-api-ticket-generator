@@ -10,20 +10,20 @@ to: _temp/ticketTree.json
             "title": "Update <%= h.changeCase.upper(nodeType) %> Node",
             "userStory": "As an API contributor\nI want to be able to update a <%= h.changeCase.upper(nodeType) %>\nSo I can add missing information or fix incorrect data",
             "specificationList": [
-                "A <%= h.changeCase.upper(nodeType) %> node is successfully updated when the request contains valid data. The required data structure is specified in parent (epic) ticket <%= h.changeCase.upper(h.changeCase.kebab(epicId)) %>. -> Status Code `201`",
+                "A <%= h.changeCase.upper(nodeType) %> node is successfully updated when the request contains valid data. The required data structure is specified in parent (epic) ticket <%= h.changeCase.upper(h.changeCase.kebab(epicId)) %>. -> Status Code `200`",
                 "A successful request returns the updated node with all properties that are officially specified.",
                 "The `updated_at` timestamp will be updated, the `created_at` timestamp not.",
                 "Mandatory properties can be overwritten, but not removed. -> Status Code `400`",
-                "Optional properties can be overwritten or removed. -> Status Code `201`",
-                "Unknown properties are ignored. They are not processed. They do not produce any info, warning or error messages for the user. -> Status Code `201`",
-                "Read-only properties (`id`, `created_at`, `updated_at`) are ignored. They are not processed. They do not produce any info, warning or error messages for the user. -> Status Code `201`",
+                "Optional properties can be overwritten or removed. -> Status Code `200`",
+                "Unknown properties are ignored. They are not processed. They do not produce any info, warning or error messages for the user. -> Status Code `200`",
+                "Read-only properties (`id`, `created_at`, `updated_at`) are ignored. They are not processed. They do not produce any info, warning or error messages for the user. -> Status Code `200`",
                 "Requests with invalid ID are rejected. This case can happen when there exists no node with that ID or when the node is not from type <%= h.changeCase.upper(nodeType) %>. -> Status Code `404`",
                 "Requests with invalid data are rejected. Cases for invalid data include: syntax errors, wrong data types, wrong data structure or trying to remove a mandatory field. -> Status Code `400`"
             ],
             "apiVerb": "PATCH",
             "apiPath": "/<%= h.changeCase.kebab(h.inflection.pluralize(nodeType)) %>/<<%= h.changeCase.kebab(nodeType) %>-id>",
             "responseOptions": [
-                "201",
+                "200",
                 "400",
                 "404"
             ],
@@ -31,7 +31,7 @@ to: _temp/ticketTree.json
                 {
                     "title": "Requests to update a <%= h.changeCase.upper(nodeType) %> are accepted when the provided data is valid",
                     "description": "Data is valid when its structure is correct and has no syntax errors. Mandatory fields can be overwritten, but not deleted (via null value).",
-                    "responseCode": "201",
+                    "responseCode": "200",
                     "tests": [
                         {
                             "title": "Updating a <%= h.changeCase.upper(nodeType) %> with valid data",
@@ -43,7 +43,7 @@ to: _temp/ticketTree.json
                                 properties.forEach(prop => {
                                     gherkin.push('  | ' + prop.name + ' | ' + (!prop.example ? '' : prop.datatype === 'number' ? Number(prop.example) + 2 : prop.example + '_2') + ' |')
                                 })
-                                gherkin.push('Then the request should be confirmed with status code 201')
+                                gherkin.push('Then the request should be confirmed with status code 200')
                             %>
                             "gherkin": "<%- gherkin.join('\\n') %>"
                         }
@@ -67,7 +67,7 @@ to: _temp/ticketTree.json
                 }, {
                     "title": "Updating a <%= h.changeCase.upper(nodeType) %> changes the updated_at timestamp",
                     "description": "",
-                    "responseCode": "201",
+                    "responseCode": "200",
                     "tests": [
                         {
                             "title": "Expecting the updated_at timestamp to change when updating a <%= h.changeCase.upper(nodeType) %>",
@@ -107,7 +107,7 @@ to: _temp/ticketTree.json
                 }, {
                     "title": "The response contains all properties that are officially specified when updating a <%= h.changeCase.upper(nodeType) %>",
                     "description": "All properties are returned that are specified in the epic <%= h.changeCase.upper(h.changeCase.kebab(epicId)) %>. When properties are empty they are returned with null values. IDs, timestamp and other meta information might be included too, but is not in the scope of this AC.",
-                    "responseCode": "201",
+                    "responseCode": "200",
                     "tests": [
                         {
                             "title": "Expecting all properties to be returned when updating a <%= h.changeCase.upper(nodeType) %>",
@@ -119,7 +119,7 @@ to: _temp/ticketTree.json
                                 properties.forEach(prop => {
                                     gherkin.push('  | ' + prop.name + ' | ' + (!prop.example ? '' : prop.datatype === 'number' ? Number(prop.example) + 2 : prop.example + '_2') + ' |')
                                 })
-                                gherkin.push('Then the request should be confirmed with status code 201')
+                                gherkin.push('Then the request should be confirmed with status code 200')
                                 gherkin.push('And the response should contain the following properties')
                                 gherkin.push('  | key | value |')
                                 properties.forEach(prop => {
@@ -157,7 +157,7 @@ to: _temp/ticketTree.json
                 }, {
                     "title": "Unknown properties are ignored when updating a <%= h.changeCase.upper(nodeType) %>",
                     "description": "The user can provide properties that are not specified in the epic <%= h.changeCase.upper(h.changeCase.kebab(epicId)) %>, but they will be completely ignored. They will not be processed and there will be no info, warning or error that they were skipped.",
-                    "responseCode": "201",
+                    "responseCode": "200",
                     "tests": [
                         {
                             "title": "Expecting unknown properties to be ignored when updating a <%= h.changeCase.upper(nodeType) %>",
@@ -177,7 +177,7 @@ to: _temp/ticketTree.json
                 }, {
                     "title": "Read-only properties cannot be overridden by the user when updating a <%= h.changeCase.upper(nodeType) %>",
                     "description": "Read-only properties are for example `ID`, `created_at` and `updated_at`. Analog to unknown properties, those fields will be ignored. They will not be processed and there will be no info, warning or error that they were skipped.",
-                    "responseCode": "201",
+                    "responseCode": "200",
                     "tests": [
                         {
                             "title": "Expecting read-only properties to be ignored when updating a <%= h.changeCase.upper(nodeType) %>",
